@@ -1,0 +1,20 @@
+{% extends 'index.html' %}
+
+{% block right-content-container %}
+  <h1 class="page-header">管理员菜单</h1>
+
+  <table class="table table-striped">
+        <tbody>
+            <tr>
+                <td><h3><a  href="{% url "admin_info" dict.teacher dict.admin_info dict.id1 %}">学生信息管理</a></h3></td>
+            </tr>
+            <tr>
+                <td><h3><a  href="{% url "admin_info" dict.teacher dict.admin_info dict.id2  %}">预约信息管理</a></h3></td>
+            </tr>
+            <tr>
+                <td><h3><a  href="{% url "admin_info" dict.teacher dict.admin_info dict.id3  %}">箱柜信息管理</a></h3></td>
+            </tr>
+        </tbody>
+
+   </table>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'index.html' %}
+{% load kingadmin_tags %}
+
+
+{% block right-content-container %}
+  <ol class="breadcrumb page-header">
+      <li><h3>{{ name }}</h3></li>
+      <li><a href="/teacher/">返回</a></li>
+      <li class="active">1</li>
+  </ol>
+   <form class="form-horizontal" method="post" >{% csrf_token %}
+        {% for obj in form_obj %}
+            <div class=" col-md-10 main" >
+                <label>{{ obj.label }}</label>{{ obj }}
+            </div>
+        {% endfor %}
+        {% if admin_info_id == "1" %}
+                <div class=" col-md-10 main ">
+                    <label>校园卡图片</label><img style="height: 200px;width: 300px" src="/static/{{ s.head_img}}">
+                </div>
+         {% endif %}
+        <div class="col-sm-offset-9 col-sm-2">
+          <button type="submit" class="btn btn-info">审核通过</button>
+        </div>
+  </form>
+{% endblock %}

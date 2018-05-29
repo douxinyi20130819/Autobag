@@ -1,0 +1,112 @@
+{% extends 'index.html' %}
+{% load kingadmin_tags %}
+
+
+{% block right-content-container %}
+  <ol class="breadcrumb page-header">
+      <li><h3>{{ name }}</h3></li>
+      <li><a href="/teacher/">返回</a></li>
+      <li class="active">{% get_model_verbose_name id %}</li>
+  </ol>
+  <table class="table table-striped">
+        <thead>
+            <tr>
+                <td><input row-select="true"  type="checkbox" onclick="SelectAllObjs(this)" ></td>
+                {% for title_name in title %}
+                <td>{{ title_name }}</td>
+                 {% endfor %}
+            </tr>
+        </thead>
+        {% if id == "2" %}
+            <tbody>
+            <form >
+                <div class='col-md-1'>
+                    <select class='form-control ' name=''>
+                        <option>---------</option>
+                        <option>已过期</option>
+                    </select>
+                </div>
+                <input class="btn btn-success" type="submit" value="过滤">
+            </form>
+            {% for obj in querysets %}
+                 <tr>
+                     <td><input row-select="true"  type="checkbox" value="{{ obj.id }}"></td>
+                     {%  build_table_row obj title_list id %}
+                     <td><button style="padding: 0px" class="btn btn-info" onclick="agr(this)">审核通过</button></td>
+                     <td><button style="padding: 0px" class="btn btn-info" onclick="agr(this)">拒绝</button></td>
+                 </tr>
+            {% endfor %}
+            </tbody>
+        {% else %}
+            <tbody>
+             {% for obj in querysets %}
+                 <tr>
+                     <td><input row-select="true"  type="checkbox" value="{{ obj.id }}"></td>
+                     {%  build_table_row obj title_list id %}
+                 </tr>
+            {% endfor %}
+            </tbody>
+        {% endif %}
+  </table>
+    {% if id == "2" %}
+    <div class="col-sm-offset-11 col-sm-2">
+          <button  class="btn btn-info" onclick="allagr(this)">批量审核</button>
+    </div>
+    {% endif %}
+
+
+
+    <script>
+        function agr(ths) {
+            var val = $(ths).parent().prevAll("td:last").children().val();
+            var txt = $(ths).text();
+            $.ajax({
+                type:'POST',
+                dataType:'json',
+                data:{csrfmiddlewaretoken: '{{ csrf_token }}',type:txt,data_id:val},
+                success:function(arg) {
+
+                }
+            })
+            location.reload(true);
+        }
+
+        function SelectAllObjs(ele) {
+
+            if ($(ele).prop('checked')){
+                $('input[row-select]').prop('checked',true)
+
+            }else {
+                $('input[row-select]').prop('checked',false)
+            }
+        }
+
+        function allagr(ths) {
+            var selected_objs = $("input[row-select]").filter(":checked");
+            if (selected_objs.length == 0) {
+                alert("no object selected!")
+            }else{
+                var selected_ids = [];
+                $.each(selected_objs,function () {
+                    console.log($(this) );
+                    selected_ids.push($(this).val())
+                });
+                console.log(selected_ids);
+                var input_ele = "<input type='hidden' name='selected_ids' value=" + JSON.stringify(selected_ids) + ">";
+                $(ths).parent().append(input_ele);
+
+                var data_list = JSON.stringify(selected_ids);
+
+                $.ajax({
+                    type:'POST',
+                    dataType:'json',
+                    data:{csrfmiddlewaretoken: '{{ csrf_token }}',type:'list',data_id:data_list},
+                    success:function(arg) {
+
+                    }
+                })
+                location.reload(true);
+            }
+        }
+    </script>
+{% endblock %}
